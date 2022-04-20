@@ -11,13 +11,13 @@ const pool = new Pool({
   database: 'lightbnb'
 });
 
-const qs = `SELECT title 
-FROM properties 
-LIMIT 10;`
+// const qs = `SELECT title 
+// FROM properties 
+// LIMIT 10;`
 
 
-pool.query(qs).then(response => {console.log(response)})
-.catch(err => console.error('query error', err.stack));
+// pool.query(qs).then(response => {console.log(response)})
+// .catch(err => console.error('query error', err.stack));
 
 /// Users
 
@@ -26,18 +26,14 @@ pool.query(qs).then(response => {console.log(response)})
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
+
 const getUserWithEmail = function(email) {
-  let user;
-  for (const userId in users) {
-    user = users[userId];
-    if (user.email.toLowerCase() === email.toLowerCase()) {
-      break;
-    } else {
-      user = null;
-    }
-  }
-  return Promise.resolve(user);
-}
+	const queryString = `
+		SELECT *
+		FROM users
+		WHERE email = $1`;
+	return pool.query(queryString, [email]).then(res => res.rows[0]);
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**
@@ -84,21 +80,21 @@ exports.getAllReservations = getAllReservations;
  * @param {*} limit The number of results to return.
  * @return {Promise<[{}]>}  A promise to the properties.
  */
- const getAllProperties = (options, limit = 10) => {
-  return pool
-    .query(`SELECT * 
-    FROM properties 
-    LIMIT $1`, 
-    [limit])
-    .then((result) => {
-      console.log(result.rows);
-      return result.rows;
-    })
-    .catch((err) => {
-      console.log(err.message);
-    });
-};
-exports.getAllProperties = getAllProperties;
+//  const getAllProperties = (options, limit = 10) => {
+//   return pool
+//     .query(`SELECT * 
+//     FROM properties 
+//     LIMIT $1`, 
+//     [limit])
+//     .then((result) => {
+//       console.log(result.rows);
+//       return result.rows;
+//     })
+//     .catch((err) => {
+//       console.log(err.message);
+//     });
+// };
+// exports.getAllProperties = getAllProperties;
 
 
 /**
